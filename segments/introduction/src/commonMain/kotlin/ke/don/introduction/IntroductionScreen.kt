@@ -37,12 +37,13 @@ fun IntroductionScreen(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         TextSegment(
-            title = "Building Slides with Jetpack Compose on Ski",
-            presenter = "Jane Doe"
+            title = "Big Data with Jetpack Compose",
+            presenter = "Donald Isoe",
+            occupation = "Android Engineer",
         )
 
         ImageSegment(
-            painter = Resources.Images.RAFAELLA
+            painter = Resources.Images.DON
         )
     }
 }
@@ -60,7 +61,7 @@ private fun ImageSegment(
     ) {
         ExpressivePictureFrame(
             image = painter,
-            sizeDp = 400,
+            sizeDp = 600,
             polygon = MaterialShapes.Clover4Leaf,
             backgroundColor = MaterialTheme.colorScheme.primary,
             brushType = BrushType.SWEEP

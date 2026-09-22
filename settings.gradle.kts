@@ -1,4 +1,4 @@
-rootProject.name = "Ski"
+rootProject.name = "big_data_with_compose"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

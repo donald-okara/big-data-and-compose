@@ -1,6 +1,6 @@
 package ke.don.resources
 
-import ski.shared.resources.generated.resources.*
+import big_data_with_compose.shared.resources.generated.resources.*
 
 
 object Resources {
@@ -18,6 +18,7 @@ object Resources {
         //People
         val IAN = Res.drawable.ian_dooley
         val IVANA = Res.drawable.ivana_cajina
+        val DON = Res.drawable.don
         val RAFAELLA = Res.drawable.rafaella_mendes
         val ANDROID_ROBOT = Res.drawable.android_head_3D
     }

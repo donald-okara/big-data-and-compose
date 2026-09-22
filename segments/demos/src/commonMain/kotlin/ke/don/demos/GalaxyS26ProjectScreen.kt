@@ -1,0 +1,245 @@
+package ke.don.demos
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
+import io.github.donald_okara.components.devices.DeviceCatalog
+import io.github.donald_okara.components.devices.DeviceFrame
+import io.github.donald_okara.components.devices.DeviceOrientation
+import io.github.donald_okara.components.guides.code_viewer.FocusKotlinViewer
+import io.github.donald_okara.components.guides.code_viewer.KotlinCodeViewerCard
+import io.github.donald_okara.components.metrics.CompositionMetricsDashboard
+import io.github.donald_okara.components.metrics.TrackedProjectItemCard
+import ke.don.domain.ProjectItem
+
+/**
+ * Example usage of [CompositionMetricsLayout] showcasing a feature sprint list
+ * encapsulated inside the Samsung Galaxy S26 device frame.
+ */
+@Composable
+fun GalaxyS26ProjectScreen(
+    modifier: Modifier = Modifier
+) {
+    val projectItems = remember {
+        listOf(
+            ProjectItem("1", "Jetpack Compose Design System", "UI Framework", 120.5, "Active"),
+            ProjectItem("2", "Offline Cache Sync (Room DB)", "Storage", 45.0, "Active"),
+            ProjectItem("3", "Hilt Dependency Refactor", "Architecture", 88.2, "Idle"),
+            ProjectItem("4", "LeakCanary Performance Fixes", "Optimization", 15.0, "Active"),
+            ProjectItem("5", "Biometric Auth Integration", "Security", 30.5, "Completed")
+        )
+    }
+
+    val sampleCode = """
+        @Composable
+        fun GalaxyS26ProjectScreen(
+            modifier: Modifier = Modifier
+        ) {
+            val items = remember { listOf(...) }
+            
+            CompositionMetricsLayout(
+                totalItemsComposed = items.size,
+                explanationTitle = "Android Feature Sprint & Composition Tracking",
+                explanationDescription = "Reusable metrics layout with top banner, Compose Grid, and Galaxy S26 device frame.",
+                codeSnippet = "...sampleCode..."
+            ) {
+                DeviceFrame(spec = DeviceCatalog.GalaxyS26) {
+                    DeviceListContent(items = items)
+                }
+            }
+        }
+    """.trimIndent()
+
+    CompositionMetricsLayout(
+        totalItemsComposed = projectItems.size,
+        explanationTitle = "Android Feature Sprint & Composition Tracking",
+        explanationDescription = "Built using Compose Grid & CompositionMetricsLayout: Thin metrics banner at the top, top-left explanation, bottom-left interactive code viewer, and whole-right Samsung Galaxy S26 device frame displaying purely the project item list.",
+        codeSnippet = sampleCode,
+        modifier = modifier
+    ) {
+        DeviceFrame(
+            spec = DeviceCatalog.GalaxyS26.copy(
+                orientation = DeviceOrientation.PORTRAIT
+            ),
+            modifier = Modifier.height(620.dp)
+        ) {
+            DeviceListContent(items = projectItems)
+        }
+    }
+}
+
+/**
+ * Reusable component layout featuring a thin top metrics banner and a flat non-nested Compose Grid
+ * for explanations, code snippets, and custom right-side content (e.g. device frame).
+ */
+@Composable
+fun CompositionMetricsLayout(
+    totalItemsComposed: Int,
+    explanationTitle: String,
+    explanationDescription: String,
+    codeSnippet: String,
+    modifier: Modifier = Modifier,
+    rightContent: @Composable () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Thin row banner at the top above everything in the grid
+        CompositionMetricsDashboard(
+            totalItemsComposed = totalItemsComposed
+        )
+
+        // Main content in Compose Grid
+        ProjectItemsContent(
+            explanationTitle = explanationTitle,
+            explanationDescription = explanationDescription,
+            codeSnippet = codeSnippet,
+            modifier = Modifier.weight(1f),
+            rightContent = rightContent
+        )
+    }
+}
+
+@Composable
+fun ProjectItemsContent(
+    explanationTitle: String,
+    explanationDescription: String,
+    codeSnippet: String,
+    modifier: Modifier = Modifier,
+    rightContent: @Composable () -> Unit
+) {
+    ComposeGrid(
+        modifier = modifier.fillMaxSize()
+    ) {
+        // 1. Top Left: Explanation Text
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = explanationTitle,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = explanationDescription,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        // 2. Bottom Left: Code snippet card
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            var isCardDark by remember { mutableStateOf(true) }
+            var isFocused by remember { mutableStateOf(false) }
+            var isFocusDark by remember { mutableStateOf(true) }
+
+            KotlinCodeViewerCard(
+                modifier = Modifier.fillMaxSize(),
+                darkTheme = isCardDark,
+                toggleFocus = { isFocused = !isFocused },
+                toggleTheme = { isCardDark = !isCardDark }
+            ) {
+                codeSnippet
+            }
+
+            if (isFocused) {
+                FocusKotlinViewer(
+                    onDismiss = { isFocused = false },
+                    darkTheme = isFocusDark,
+                    toggleTheme = { isFocusDark = !isFocusDark }
+                ) {
+                    codeSnippet
+                }
+            }
+        }
+
+        // 3. Whole Right: The device frame
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            rightContent()
+        }
+    }
+}
+
+@Composable
+fun ComposeGrid(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Layout(
+        modifier = modifier,
+        content = content
+    ) { measurables, constraints ->
+        val spacing = 24.dp.roundToPx()
+        val totalWidth = constraints.maxWidth
+        val totalHeight = constraints.maxHeight
+
+        val colWidth = ((totalWidth - spacing).coerceAtLeast(0)) / 2
+        val halfHeight = ((totalHeight - spacing).coerceAtLeast(0)) / 2
+
+        val leftTopConstraints = Constraints.fixed(colWidth, halfHeight)
+        val leftBottomConstraints = Constraints.fixed(colWidth, (totalHeight - halfHeight - spacing).coerceAtLeast(0))
+        val rightConstraints = Constraints.fixed(colWidth, totalHeight)
+
+        val placeables = measurables.mapIndexed { index, measurable ->
+            when (index) {
+                0 -> measurable.measure(leftTopConstraints)
+                1 -> measurable.measure(leftBottomConstraints)
+                else -> measurable.measure(rightConstraints)
+            }
+        }
+
+        layout(totalWidth, totalHeight) {
+            placeables.getOrNull(0)?.placeRelative(0, 0)
+            placeables.getOrNull(1)?.placeRelative(0, halfHeight + spacing)
+            placeables.getOrNull(2)?.placeRelative(colWidth + spacing, 0)
+        }
+    }
+}
+
+@Composable
+private fun DeviceListContent(
+    items: List<ProjectItem>
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(vertical = 4.dp)
+    ) {
+        items(items) { item ->
+            TrackedProjectItemCard(item = item)
+        }
+    }
+}
