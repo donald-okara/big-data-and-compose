@@ -17,6 +17,7 @@ import ke.don.domain.generateDeck
 import ke.don.domain.timer.TimerController
 import ke.don.introduction.IntroductionScreen
 import ke.don.introduction.ProblemStatementScreen
+import ke.don.introduction.SegmentOneIntroScreen
 import kotlin.time.Duration
 
 @Composable
@@ -42,6 +43,14 @@ fun skiPresentationSlides(sessionDuration: Duration = SESSION_DURATION): List<Sl
                     footer = null
                 ) {
                     ProblemStatementScreen()
+                }
+                slide(
+                    "Segment 1 Intro",
+                    transition = ScreenTransition.Fade,
+                    notes = segmentOneIntroNotes,
+                    footer = null
+                ) {
+                    SegmentOneIntroScreen()
                 }
                 slide("Big Data & Composition Metrics") {
                     GalaxyS26ProjectScreen()

@@ -31,6 +31,11 @@ import io.github.donald_okara.components.guides.code_viewer.KotlinCodeViewerCard
 import io.github.donald_okara.components.metrics.CompositionMetricsDashboard
 import io.github.donald_okara.components.metrics.TrackedProjectItemCard
 import ke.don.domain.ProjectItem
+import ke.don.domain.sampleProjectItems
+
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.derivedStateOf
 
 /**
  * Example usage of [CompositionMetricsLayout] showcasing a feature sprint list
@@ -40,14 +45,13 @@ import ke.don.domain.ProjectItem
 fun GalaxyS26ProjectScreen(
     modifier: Modifier = Modifier
 ) {
-    val projectItems = remember {
-        listOf(
-            ProjectItem("1", "Jetpack Compose Design System", "UI Framework", 120.5, "Active"),
-            ProjectItem("2", "Offline Cache Sync (Room DB)", "Storage", 45.0, "Active"),
-            ProjectItem("3", "Hilt Dependency Refactor", "Architecture", 88.2, "Idle"),
-            ProjectItem("4", "LeakCanary Performance Fixes", "Optimization", 15.0, "Active"),
-            ProjectItem("5", "Biometric Auth Integration", "Security", 30.5, "Completed")
-        )
+    val projectItems = remember { sampleProjectItems }
+    val listState = rememberLazyListState()
+    
+    val itemsInViewCount by remember {
+        derivedStateOf {
+            listState.layoutInfo.visibleItemsInfo.size
+        }
     }
 
     val sampleCode = """
@@ -56,22 +60,24 @@ fun GalaxyS26ProjectScreen(
             modifier: Modifier = Modifier
         ) {
             val items = remember { listOf(...) }
+            val listState = rememberLazyListState()
+            val visibleCount by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo.size } }
             
             CompositionMetricsLayout(
-                totalItemsComposed = items.size,
+                totalItemsComposed = visibleCount,
                 explanationTitle = "Android Feature Sprint & Composition Tracking",
                 explanationDescription = "Reusable metrics layout with top banner, Compose Grid, and Galaxy S26 device frame.",
                 codeSnippet = "...sampleCode..."
             ) {
                 DeviceFrame(spec = DeviceCatalog.GalaxyS26) {
-                    DeviceListContent(items = items)
+                    DeviceListContent(items = items, state = listState)
                 }
             }
         }
     """.trimIndent()
 
     CompositionMetricsLayout(
-        totalItemsComposed = projectItems.size,
+        totalItemsComposed = itemsInViewCount,
         explanationTitle = "Android Feature Sprint & Composition Tracking",
         explanationDescription = "Built using Compose Grid & CompositionMetricsLayout: Thin metrics banner at the top, top-left explanation, bottom-left interactive code viewer, and whole-right Samsung Galaxy S26 device frame displaying purely the project item list.",
         codeSnippet = sampleCode,
@@ -83,7 +89,7 @@ fun GalaxyS26ProjectScreen(
             ),
             modifier = Modifier.height(620.dp)
         ) {
-            DeviceListContent(items = projectItems)
+            DeviceListContent(items = projectItems, state = listState)
         }
     }
 }
@@ -228,9 +234,11 @@ fun ComposeGrid(
 
 @Composable
 private fun DeviceListContent(
-    items: List<ProjectItem>
+    items: List<ProjectItem>,
+    state: LazyListState
 ) {
     LazyColumn(
+        state = state,
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)

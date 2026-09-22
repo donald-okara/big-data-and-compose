@@ -14,3 +14,8 @@ val problemStatementNotes = listOf(
     AnnotatedString("• Unbounded UI Materialization: When massive quantities of items hit the UI layer, attempting to instantiate, measure, or hold layouts for all of them concurrently blocks the main frame rendering loops, inducing critical frame drops and memory allocation spikes."),
     AnnotatedString("• Ripple Recompositions: Lacking fine-grained keying or stability guarantees causes a simple state change in one cell to cascade and re-evaluate every independent row in the visible list, blowing up our composition metrics dashboard.")
 )
+
+val segmentOneIntroNotes = listOf(
+    AnnotatedString("• Setting up our very first practical segment: Columns vs LazyColumns."),
+    AnnotatedString("• The goal: Understand exactly when standard view containers hit physical thresholds and where lazy variants step in."),
+)
