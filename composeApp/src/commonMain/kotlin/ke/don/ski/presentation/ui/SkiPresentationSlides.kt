@@ -3,20 +3,17 @@ package ke.don.ski.presentation.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import ke.don.demos.DeviceGallery
-import ke.don.demos.ExampleSlide
-import ke.don.demos.GalaxyS26ProjectScreen
-import ke.don.demos.HorizontalSegmentsDemo
-import ke.don.demos.KodeViewerSlide
-import ke.don.demos.VerticalSegmentsDemo
-import ke.don.demos.WhiteboardSlide
+import ke.don.demos.ExampleColumnPresentation
+import ke.don.demos.ExampleGridPresentation
 import ke.don.domain.ScreenTransition
 import ke.don.domain.SlideConfig
 import ke.don.domain.SlidesConstants.SESSION_DURATION
 import ke.don.domain.generateDeck
 import ke.don.domain.timer.TimerController
 import ke.don.introduction.IntroductionScreen
+import ke.don.introduction.ListComparisonScreen
 import ke.don.introduction.ProblemStatementScreen
+import ke.don.introduction.RealTimeIntroScreen
 import ke.don.introduction.SegmentOneIntroScreen
 import kotlin.time.Duration
 
@@ -52,8 +49,33 @@ fun skiPresentationSlides(sessionDuration: Duration = SESSION_DURATION): List<Sl
                 ) {
                     SegmentOneIntroScreen()
                 }
-                slide("Big Data & Composition Metrics") {
-                    GalaxyS26ProjectScreen()
+                slide(
+                    "Layout Selection Matrix",
+                    transition = ScreenTransition.Fade,
+                    notes = listComparisonNotes,
+                    footer = null
+                ) {
+                    ListComparisonScreen()
+                }
+                slide(
+                    "Real Time Intro",
+                    transition = ScreenTransition.Fade,
+                    notes = realTimeIntroNotes,
+                    footer = null
+                ) {
+                    RealTimeIntroScreen()
+                }
+                slide(
+                    "Regular Columns",
+                    notes = columnDemoNotes
+                ) {
+                    ExampleColumnPresentation()
+                }
+                slide(
+                    "Lazy Columns Simulation",
+                    notes = lazyColumnDemoNotes
+                ) {
+                    ExampleGridPresentation()
                 }
             }
         }

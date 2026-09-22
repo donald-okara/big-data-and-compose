@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ke.don.domain.ProjectItem
 
 @Composable
@@ -79,20 +80,26 @@ fun TrackedProjectItemCard(
         ){
             Column(modifier = Modifier.fillMaxWidth()) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(end = 40.0.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = item.title,
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            fontSize = 13.sp,
+                            lineHeight = 16.sp
+                        ),
                         fontWeight = FontWeight.Bold
                     )
                 }
 
                 Text(
-                    text = "Category: ${item.category} | Size: ${item.dataSizeMb} MB",
-                    style = MaterialTheme.typography.bodySmall,
+                    text = "Category: ${item.category}",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 11.sp,
+                        lineHeight = 14.sp
+                    ),
                     color = Color.Gray
                 )
             }
@@ -100,14 +107,16 @@ fun TrackedProjectItemCard(
             Surface(
                 color = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                shape = RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp),
-                modifier = Modifier.align(Alignment.TopEnd)
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Text(
                     text = "$recomposeCount",
-                    style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Black
+                    ),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 )
             }
         }

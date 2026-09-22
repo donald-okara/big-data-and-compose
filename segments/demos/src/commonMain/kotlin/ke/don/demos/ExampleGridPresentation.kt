@@ -1,5 +1,10 @@
 package ke.don.demos
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,10 +14,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,17 +41,15 @@ import io.github.donald_okara.components.metrics.CompositionMetricsDashboard
 import io.github.donald_okara.components.metrics.TrackedProjectItemCard
 import ke.don.domain.ProjectItem
 import ke.don.domain.sampleProjectItems
-
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.derivedStateOf
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Example usage of [CompositionMetricsLayout] showcasing a feature sprint list
  * encapsulated inside the Samsung Galaxy S26 device frame.
  */
 @Composable
-fun GalaxyS26ProjectScreen(
+fun ExampleGridPresentation(
     modifier: Modifier = Modifier
 ) {
     val projectItems = remember { sampleProjectItems }
@@ -56,21 +63,18 @@ fun GalaxyS26ProjectScreen(
 
     val sampleCode = """
         @Composable
-        fun GalaxyS26ProjectScreen(
+        fun WindowedLazyColumn(
             modifier: Modifier = Modifier
         ) {
-            val items = remember { listOf(...) }
+            val items = remember { sampleProjectItems }
             val listState = rememberLazyListState()
-            val visibleCount by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo.size } }
+            val visibleCount by remember {
+                derivedStateOf { listState.layoutInfo.visibleItemsInfo.size }
+            }
             
-            CompositionMetricsLayout(
-                totalItemsComposed = visibleCount,
-                explanationTitle = "Android Feature Sprint & Composition Tracking",
-                explanationDescription = "Reusable metrics layout with top banner, Compose Grid, and Galaxy S26 device frame.",
-                codeSnippet = "...sampleCode..."
-            ) {
-                DeviceFrame(spec = DeviceCatalog.GalaxyS26) {
-                    DeviceListContent(items = items, state = listState)
+            LazyColumn(state = listState) {
+                items(items, key = { it.id }) { item ->
+                    TrackedProjectItemCard(item = item)
                 }
             }
         }
@@ -78,8 +82,8 @@ fun GalaxyS26ProjectScreen(
 
     CompositionMetricsLayout(
         totalItemsComposed = itemsInViewCount,
-        explanationTitle = "Android Feature Sprint & Composition Tracking",
-        explanationDescription = "Built using Compose Grid & CompositionMetricsLayout: Thin metrics banner at the top, top-left explanation, bottom-left interactive code viewer, and whole-right Samsung Galaxy S26 device frame displaying purely the project item list.",
+        explanationTitle = "Windowed Viewport Allocation Pass",
+        explanationDescription = "Built using LazyColumn & rememberLazyListState: Only layout nodes that intersect with the active device viewport window are allocated in memory. Notice how the composed count dynamically scales and updates context parameters on the fly as you scroll down the dataset feed.",
         codeSnippet = sampleCode,
         modifier = modifier
     ) {
@@ -107,23 +111,34 @@ fun CompositionMetricsLayout(
     modifier: Modifier = Modifier,
     rightContent: @Composable () -> Unit
 ) {
+    var startAnim by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        delay(50.milliseconds)
+        startAnim = true
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Thin row banner at the top above everything in the grid
-        CompositionMetricsDashboard(
-            totalItemsComposed = totalItemsComposed
-        )
+        AnimatedVisibility(
+            visible = startAnim,
+            enter = fadeIn(animationSpec = tween(500)) + slideInVertically(animationSpec = tween(500)) { -20 }
+        ) {
+            CompositionMetricsDashboard(
+                totalItemsComposed = totalItemsComposed
+            )
+        }
 
         // Main content in Compose Grid
         ProjectItemsContent(
             explanationTitle = explanationTitle,
             explanationDescription = explanationDescription,
             codeSnippet = codeSnippet,
+            startAnim = startAnim,
             modifier = Modifier.weight(1f),
             rightContent = rightContent
         )
@@ -135,6 +150,7 @@ fun ProjectItemsContent(
     explanationTitle: String,
     explanationDescription: String,
     codeSnippet: String,
+    startAnim: Boolean,
     modifier: Modifier = Modifier,
     rightContent: @Composable () -> Unit
 ) {
@@ -142,56 +158,71 @@ fun ProjectItemsContent(
         modifier = modifier.fillMaxSize()
     ) {
         // 1. Top Left: Explanation Text
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        AnimatedVisibility(
+            visible = startAnim,
+            enter = fadeIn(animationSpec = tween(600, delayMillis = 100)) + slideInHorizontally(animationSpec = tween(600, delayMillis = 100)) { -30 }
         ) {
-            Text(
-                text = explanationTitle,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = explanationDescription,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = explanationTitle,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = explanationDescription,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
 
         // 2. Bottom Left: Code snippet card
-        Box(
-            modifier = Modifier.fillMaxSize()
+        AnimatedVisibility(
+            visible = startAnim,
+            enter = fadeIn(animationSpec = tween(600, delayMillis = 200)) + slideInVertically(animationSpec = tween(600, delayMillis = 200)) { 30 }
         ) {
-            var isCardDark by remember { mutableStateOf(true) }
-            var isFocused by remember { mutableStateOf(false) }
-            var isFocusDark by remember { mutableStateOf(true) }
-
-            KotlinCodeViewerCard(
-                modifier = Modifier.fillMaxSize(),
-                darkTheme = isCardDark,
-                toggleFocus = { isFocused = !isFocused },
-                toggleTheme = { isCardDark = !isCardDark }
+            Box(
+                modifier = Modifier.fillMaxSize()
             ) {
-                codeSnippet
-            }
+                var isCardDark by remember { mutableStateOf(true) }
+                var isFocused by remember { mutableStateOf(false) }
+                var isFocusDark by remember { mutableStateOf(true) }
 
-            if (isFocused) {
-                FocusKotlinViewer(
-                    onDismiss = { isFocused = false },
-                    darkTheme = isFocusDark,
-                    toggleTheme = { isFocusDark = !isFocusDark }
+                KotlinCodeViewerCard(
+                    modifier = Modifier.fillMaxSize(),
+                    darkTheme = isCardDark,
+                    toggleFocus = { isFocused = !isFocused },
+                    toggleTheme = { isCardDark = !isCardDark }
                 ) {
                     codeSnippet
+                }
+
+                if (isFocused) {
+                    FocusKotlinViewer(
+                        onDismiss = { isFocused = false },
+                        darkTheme = isFocusDark,
+                        toggleTheme = { isFocusDark = !isFocusDark }
+                    ) {
+                        codeSnippet
+                    }
                 }
             }
         }
 
         // 3. Whole Right: The device frame
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+        AnimatedVisibility(
+            visible = startAnim,
+            enter = fadeIn(animationSpec = tween(700, delayMillis = 300)) + slideInHorizontally(animationSpec = tween(700, delayMillis = 300)) { 40 }
         ) {
-            rightContent()
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                rightContent()
+            }
         }
     }
 }

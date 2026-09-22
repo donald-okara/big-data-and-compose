@@ -11,12 +11,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.automirrored.filled.ListAlt
+import androidx.compose.material.icons.filled.ElectricBolt
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Analytics
-import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,17 +33,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.github.donald_okara.components.guides.code_viewer.FocusKotlinViewer
+import io.github.donald_okara.components.guides.code_viewer.KotlinCodeViewerCard
 import io.github.donald_okara.components.layout.HorizontallySegmentedScreen
 import ke.don.domain.frames.FrameBuilder
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun ProblemStatementScreen(
+fun ListComparisonScreen(
     modifier: Modifier = Modifier
 ) {
     var startAnim by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         delay(50.milliseconds)
         startAnim = true
@@ -54,27 +63,25 @@ fun ProblemStatementScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        // Title block with header slide-down animation
         AnimatedVisibility(
             visible = startAnim,
             enter = fadeIn(animationSpec = tween(500)) + slideInVertically(animationSpec = tween(500)) { -20 }
         ) {
             Column {
                 Text(
-                    text = "The Problem",
+                    text = "What is what",
                     style = MaterialTheme.typography.displayMediumEmphasized,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "How do we scale our app under heavy data loads",
+                    text = "Picking the right layout component based on data context",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
 
-        // Interactive split screen with staggered sliding side entrance animations
         HorizontallySegmentedScreen(
             modifier = Modifier.weight(1f),
             initialSegments = listOf(
@@ -83,15 +90,15 @@ fun ProblemStatementScreen(
                         visible = startAnim,
                         enter = fadeIn(animationSpec = tween(700, delayMillis = 150)) + slideInHorizontally(animationSpec = tween(700, delayMillis = 150)) { -40 }
                     ) {
-                        ProblemSegment()
+                        ColumnComparisonSegment()
                     }
                 },
-                1.1f to @Composable {
+                1f to @Composable {
                     AnimatedVisibility(
                         visible = startAnim,
                         enter = fadeIn(animationSpec = tween(700, delayMillis = 300)) + slideInHorizontally(animationSpec = tween(700, delayMillis = 300)) { 40 }
                     ) {
-                        FocusSegment()
+                        LazyListComparisonSegment()
                     }
                 }
             )
@@ -101,10 +108,23 @@ fun ProblemStatementScreen(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun ProblemSegment() {
+private fun ColumnComparisonSegment() {
     val frame = FrameBuilder()
         .setFrame { basic }
         .build()
+
+    val codeSnippet = """
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState())
+        ) {
+            items.forEach { item ->
+                // All items composed instantly
+                TrackedCard(item) 
+            }
+        }
+    """.trimIndent()
+
+    var showCode by remember { mutableStateOf(false) }
 
     frame.Render(
         modifier = Modifier
@@ -117,7 +137,7 @@ private fun ProblemSegment() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -127,42 +147,78 @@ private fun ProblemSegment() {
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.errorContainer),
+                        .background(MaterialTheme.colorScheme.secondaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.WarningAmber,
-                        contentDescription = "Warning",
-                        tint = MaterialTheme.colorScheme.onErrorContainer
+                        imageVector = Icons.AutoMirrored.Filled.ListAlt,
+                        contentDescription = "Column",
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
                 Text(
-                    text = "Streaming Frictions",
+                    text = "Standard Column",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.error
+                    color = MaterialTheme.colorScheme.secondary
                 )
+                
+                Spacer(modifier = Modifier.weight(1f))
+                
+                IconButton(
+                    onClick = { showCode = !showCode },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Code,
+                        contentDescription = "Toggle Code Snippet"
+                    )
+                }
             }
 
             Text(
-                text = "Challenges with heavy real-time data flows:",
-                style = MaterialTheme.typography.bodyLarge,
+                text = "Ideal for short static layouts with bounded content elements:",
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            BulletItem(text = "Room Stream Backpressure")
-            BulletItem(text = "Unbuffered UI Materialization")
-            BulletItem(text = "Ripple Recompositions")
+            CompareBullet(text = "Eager Materialization: Measures & draws everything at launch.")
+            CompareBullet(text = "Zero Layout Window overhead for lightweight components.")
+            CompareBullet(text = "Breaks under massive datasets (heavy UI jank).")
+
+            if (showCode) {
+                Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.BottomStart) {
+                    CodeViewerOverlay(codeSnippet = codeSnippet)
+                }
+            } else {
+                Spacer(modifier = Modifier.weight(1f))
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun FocusSegment() {
+private fun LazyListComparisonSegment() {
     val frame = FrameBuilder()
         .setFrame { basic }
         .build()
+
+    val codeSnippet = """
+        LazyColumn(
+            state = listState
+        ) {
+            items(items, key = { it.id }) { item ->
+                // Windowed composition
+                TrackedCard(item)
+            }
+        }
+    """.trimIndent()
+
+    var showCode by remember { mutableStateOf(false) }
 
     frame.Render(
         modifier = Modifier
@@ -175,7 +231,7 @@ private fun FocusSegment() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -189,49 +245,97 @@ private fun FocusSegment() {
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Analytics,
-                        contentDescription = "Focus",
+                        imageVector = Icons.Default.ElectricBolt,
+                        contentDescription = "Lazy",
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
                 Text(
-                    text = "Today's Focus: UI First",
+                    text = "Lazy Lists",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
+                
+                Spacer(modifier = Modifier.weight(1f))
+                
+                IconButton(
+                    onClick = { showCode = !showCode },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Code,
+                        contentDescription = "Toggle Code Snippet"
+                    )
+                }
             }
 
             Text(
-                text = "Mastering the Compose rendering layer:",
-                style = MaterialTheme.typography.bodyLarge,
+                text = "Engineered specifically for heavy or infinite enterprise streams:",
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            BulletItem(text = "Recomposition Tracking")
-            BulletItem(text = "Immutable & Stable States")
-            BulletItem(text = "Granular Lazy Keys")
-            BulletItem(text = "Pagination Pre-flight")
+            CompareBullet(text = "Windowed Materialization: Allocates items only inside viewport.")
+            CompareBullet(text = "Maintains stable frame rendering cycles at runtime scale.")
+            CompareBullet(text = "Requires proper item keying definitions for ideal recycling.")
+
+            if (showCode) {
+                Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.BottomStart) {
+                    CodeViewerOverlay(codeSnippet = codeSnippet)
+                }
+            } else {
+                Spacer(modifier = Modifier.weight(1f))
+            }
         }
     }
 }
 
 @Composable
-private fun BulletItem(text: String) {
+private fun CodeViewerOverlay(codeSnippet: String) {
+    var isCardDark by remember { mutableStateOf(true) }
+    var isFocused by remember { mutableStateOf(false) }
+    var isFocusDark by remember { mutableStateOf(true) }
+
+    KotlinCodeViewerCard(
+        modifier = Modifier.fillMaxWidth().size(160.dp),
+        darkTheme = isCardDark,
+        toggleFocus = { isFocused = !isFocused },
+        toggleTheme = { isCardDark = !isCardDark }
+    ) {
+        codeSnippet
+    }
+
+    if (isFocused) {
+        FocusKotlinViewer(
+            onDismiss = { isFocused = false },
+            darkTheme = isFocusDark,
+            toggleTheme = { isFocusDark = !isFocusDark }
+        ) {
+            codeSnippet
+        }
+    }
+}
+
+@Composable
+private fun CompareBullet(text: String) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.Top,
-        modifier = Modifier.padding(start = 8.dp)
+        modifier = Modifier.padding(start = 4.dp)
     ) {
         Text(
             text = "•",
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
