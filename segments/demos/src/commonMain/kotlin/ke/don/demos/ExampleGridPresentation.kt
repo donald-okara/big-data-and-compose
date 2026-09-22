@@ -1,5 +1,6 @@
 package ke.don.demos
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -68,10 +69,7 @@ fun ExampleGridPresentation(
         ) {
             val items = remember { sampleProjectItems }
             val listState = rememberLazyListState()
-            val visibleCount by remember {
-                derivedStateOf { listState.layoutInfo.visibleItemsInfo.size }
-            }
-            
+           
             LazyColumn(state = listState) {
                 items(items, key = { it.id }) { item ->
                     TrackedProjectItemCard(item = item)
@@ -82,15 +80,16 @@ fun ExampleGridPresentation(
 
     CompositionMetricsLayout(
         totalItemsComposed = itemsInViewCount,
-        explanationTitle = "Windowed Viewport Allocation Pass",
-        explanationDescription = "Built using LazyColumn & rememberLazyListState: Only layout nodes that intersect with the active device viewport window are allocated in memory. Notice how the composed count dynamically scales and updates context parameters on the fly as you scroll down the dataset feed.",
+        explanationTitle = "Windowed Layout Pass",
+        explanationDescription = listOf(
+            "LazyColumn + ListState",
+            "Windowed item allocation",
+        ),
         codeSnippet = sampleCode,
         modifier = modifier
     ) {
         DeviceFrame(
-            spec = DeviceCatalog.GalaxyS26.copy(
-                orientation = DeviceOrientation.PORTRAIT
-            ),
+            spec = DeviceCatalog.GalaxyS26,
             modifier = Modifier.height(620.dp)
         ) {
             DeviceListContent(items = projectItems, state = listState)
@@ -106,7 +105,7 @@ fun ExampleGridPresentation(
 fun CompositionMetricsLayout(
     totalItemsComposed: Int,
     explanationTitle: String,
-    explanationDescription: String,
+    explanationDescription: List<String>,
     codeSnippet: String,
     modifier: Modifier = Modifier,
     rightContent: @Composable () -> Unit
@@ -148,7 +147,7 @@ fun CompositionMetricsLayout(
 @Composable
 fun ProjectItemsContent(
     explanationTitle: String,
-    explanationDescription: String,
+    explanationDescription: List<String>,
     codeSnippet: String,
     startAnim: Boolean,
     modifier: Modifier = Modifier,
@@ -171,11 +170,12 @@ fun ProjectItemsContent(
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
-                Text(
-                    text = explanationDescription,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    explanationDescription.forEach { point ->
+                        DescriptionBullet(text = point)
+                    }
+                }
             }
         }
 
@@ -224,6 +224,26 @@ fun ProjectItemsContent(
                 rightContent()
             }
         }
+    }
+}
+
+@Composable
+private fun DescriptionBullet(text: String) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Text(
+            text = "•",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 

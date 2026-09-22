@@ -22,7 +22,7 @@ class DeckBuilder(
     fun slide(
         label: String,
         notes: List<AnnotatedString>? = null,
-        transition: ScreenTransition = ScreenTransition.Horizontal,
+        transition: ScreenTransition = ScreenTransition.Fade,
         frame: (@Composable () -> SkiFrame?)? = null,
         header: (@Composable () -> Unit)? = null,
         footer: (@Composable () -> Unit)? = null,

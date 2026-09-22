@@ -45,3 +45,9 @@ val lazyColumnDemoNotes = listOf(
     AnnotatedString("Look at the top counter: It reads around 5 to 6 items on initial presentation loading pass!"),
     AnnotatedString("Observe the behavior on scroll: The composed item count dynamically updates on the fly as items traverse layout boundary windows, highlighting zero pre-allocation waste.")
 )
+
+val stableKeysIntroNotes = listOf(
+    AnnotatedString("Transitioning to Part 2: Stable Keys & Recomposition."),
+    AnnotatedString("Core problem: Without explicit keys, changing or shifting a single item position forces the runtime to recompose everything below it because it relies purely on positional indices."),
+    AnnotatedString("The solution: Pinning functional structural identity using key parameters so that modifications remain strictly target-isolated.")
+)

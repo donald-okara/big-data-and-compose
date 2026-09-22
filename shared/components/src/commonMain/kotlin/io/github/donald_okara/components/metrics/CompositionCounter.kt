@@ -13,10 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,11 +23,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ke.don.domain.ProjectItem
 
+class RecompositionRef(var value: Int)
+
 @Composable
 fun rememberRecompositionCount(): Int {
-    var recompositionCount by remember { mutableStateOf(0) }
-    recompositionCount++
-    return recompositionCount
+    val ref = remember { RecompositionRef(0) }
+    ref.value++
+    return ref.value
 }
 
 @Composable

@@ -15,6 +15,7 @@ import ke.don.introduction.ListComparisonScreen
 import ke.don.introduction.ProblemStatementScreen
 import ke.don.introduction.RealTimeIntroScreen
 import ke.don.introduction.SegmentOneIntroScreen
+import ke.don.introduction.StableKeysIntroScreen
 import kotlin.time.Duration
 
 @Composable
@@ -27,7 +28,6 @@ fun skiPresentationSlides(sessionDuration: Duration = SESSION_DURATION): List<Sl
             ) {
                 slide(
                     "Introduction",
-                    transition = ScreenTransition.Fade,
                     notes = introductionNotes,
                     footer = null
                 ) {
@@ -35,7 +35,6 @@ fun skiPresentationSlides(sessionDuration: Duration = SESSION_DURATION): List<Sl
                 }
                 slide(
                     "Problem Statement",
-                    transition = ScreenTransition.Fade,
                     notes = problemStatementNotes,
                     footer = null
                 ) {
@@ -43,7 +42,6 @@ fun skiPresentationSlides(sessionDuration: Duration = SESSION_DURATION): List<Sl
                 }
                 slide(
                     "Segment 1 Intro",
-                    transition = ScreenTransition.Fade,
                     notes = segmentOneIntroNotes,
                     footer = null
                 ) {
@@ -51,7 +49,6 @@ fun skiPresentationSlides(sessionDuration: Duration = SESSION_DURATION): List<Sl
                 }
                 slide(
                     "Layout Selection Matrix",
-                    transition = ScreenTransition.Fade,
                     notes = listComparisonNotes,
                     footer = null
                 ) {
@@ -59,7 +56,6 @@ fun skiPresentationSlides(sessionDuration: Duration = SESSION_DURATION): List<Sl
                 }
                 slide(
                     "Real Time Intro",
-                    transition = ScreenTransition.Fade,
                     notes = realTimeIntroNotes,
                     footer = null
                 ) {
@@ -76,6 +72,13 @@ fun skiPresentationSlides(sessionDuration: Duration = SESSION_DURATION): List<Sl
                     notes = lazyColumnDemoNotes
                 ) {
                     ExampleGridPresentation()
+                }
+                slide(
+                    "Stable Keys Intro",
+                    notes = stableKeysIntroNotes,
+                    footer = null
+                ) {
+                    StableKeysIntroScreen()
                 }
             }
         }

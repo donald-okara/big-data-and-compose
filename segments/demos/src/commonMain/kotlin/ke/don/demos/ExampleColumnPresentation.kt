@@ -46,9 +46,12 @@ fun ExampleColumnPresentation(
 
     CompositionMetricsLayout(
         totalItemsComposed = projectItems.size, // Statically bound to 50 due to complete eager allocation pass
-        explanationTitle = "Eager Layout Evaluation Pass",
-        explanationDescription = "Built using standard Column & verticalScroll: \n" +
-                "Because standard structures lack a windowed layout viewport info bounds mechanism, all 50 cards are entirely instantiated, measured, and bound upfront simultaneously in memory, regardless of screen bounds.",
+        explanationTitle = "Eager Layout Pass",
+        explanationDescription = listOf(
+            "Column + verticalScroll",
+            "All items instantiated upfront",
+            "Complete materialization pass",
+        ),
         codeSnippet = sampleCode,
         modifier = modifier
     ) {

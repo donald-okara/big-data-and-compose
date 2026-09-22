@@ -51,7 +51,7 @@ fun Deck(
 
         val background = BackgroundBuilder()
             .setDecoratorImage(DecoratorImage(Resources.Images.ANDROID_ROBOT))
-            .setPattern(pattern = Pattern.AnimatedDiagonalWavyBackground(colors = PatternDefaults.colors))
+            .setPattern(pattern = Pattern.AnimatedDiagonalWavyBackground(colors = PatternDefaults.colors, animationDuration = 3000))
             .build()
 
 
