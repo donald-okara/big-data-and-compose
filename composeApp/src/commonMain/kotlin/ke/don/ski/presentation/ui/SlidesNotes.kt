@@ -57,3 +57,15 @@ val keyComparisonNotes = listOf(
     AnnotatedString("Updating task status without keys triggers positional re-evaluations and unnecessary recomposition across visible items."),
     AnnotatedString("Providing stable keys (key = { it.id }) preserves item identity across status updates, isolating recomposition to only the updated item.")
 )
+
+val layoutInspectorIntroNotes = listOf(
+    AnnotatedString("Transitioning to Part 3: Layout Inspector & Recomposition Tracking."),
+    AnnotatedString("Visualizing the UI tree structure and verifying live recomposition behavior."),
+    AnnotatedString("Connecting tooling to Compose performance optimization.")
+)
+
+val layoutInspectorDemoNotes = listOf(
+    AnnotatedString("Demonstrating Android Studio Layout Inspector live recomposition tracing."),
+    AnnotatedString("Live Hierarchy: Inspect composable node trees and layout bounds without code modifications."),
+    AnnotatedString("Recomposition Counters: Identify high recomposition counts and verify skip counts per node.")
+)

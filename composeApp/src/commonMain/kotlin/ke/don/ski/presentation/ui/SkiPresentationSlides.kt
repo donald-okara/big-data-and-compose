@@ -6,7 +6,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import ke.don.demos.ExampleColumnPresentation
 import ke.don.demos.ExampleGridPresentation
 import ke.don.demos.ExampleKeyComparisonPresentation
-import ke.don.domain.ScreenTransition
+import ke.don.demos.LayoutInspectorDemoScreen
+import ke.don.demos.LayoutInspectorIntroScreen
 import ke.don.domain.SlideConfig
 import ke.don.domain.SlidesConstants.SESSION_DURATION
 import ke.don.domain.generateDeck
@@ -86,6 +87,19 @@ fun skiPresentationSlides(sessionDuration: Duration = SESSION_DURATION): List<Sl
                     notes = keyComparisonNotes
                 ) {
                     ExampleKeyComparisonPresentation()
+                }
+                slide(
+                    "Layout Inspector Intro",
+                    notes = layoutInspectorIntroNotes,
+                    footer = null
+                ) {
+                    LayoutInspectorIntroScreen()
+                }
+                slide(
+                    "Layout Inspector Tracing",
+                    notes = layoutInspectorDemoNotes
+                ) {
+                    LayoutInspectorDemoScreen()
                 }
             }
         }

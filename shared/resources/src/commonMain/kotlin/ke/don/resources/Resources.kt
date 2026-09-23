@@ -22,4 +22,9 @@ object Resources {
         val RAFAELLA = Res.drawable.rafaella_mendes
         val ANDROID_ROBOT = Res.drawable.android_head_3D
     }
+
+    object Videos {
+        const val LAYOUT_INSPECTOR_DEMO_PATH = "files/layout_inspector_demo.mov"
+        fun getLayoutInspectorDemoUri(): String = Res.getUri(LAYOUT_INSPECTOR_DEMO_PATH)
+    }
 }
