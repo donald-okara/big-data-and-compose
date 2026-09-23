@@ -3,11 +3,13 @@ package ke.don.ski.presentation.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import ke.don.demos.ConclusionScreen
 import ke.don.demos.ExampleColumnPresentation
 import ke.don.demos.ExampleGridPresentation
 import ke.don.demos.ExampleKeyComparisonPresentation
 import ke.don.demos.LayoutInspectorDemoScreen
 import ke.don.demos.LayoutInspectorIntroScreen
+import ke.don.demos.QuestionsScreen
 import ke.don.domain.SlideConfig
 import ke.don.domain.SlidesConstants.SESSION_DURATION
 import ke.don.domain.generateDeck
@@ -100,6 +102,19 @@ fun skiPresentationSlides(sessionDuration: Duration = SESSION_DURATION): List<Sl
                     notes = layoutInspectorDemoNotes
                 ) {
                     LayoutInspectorDemoScreen()
+                }
+                slide(
+                    "Summary & Best Practices",
+                    notes = conclusionNotes
+                ) {
+                    ConclusionScreen()
+                }
+                slide(
+                    "Q&A",
+                    notes = questionsNotes,
+                    footer = null
+                ) {
+                    QuestionsScreen()
                 }
             }
         }

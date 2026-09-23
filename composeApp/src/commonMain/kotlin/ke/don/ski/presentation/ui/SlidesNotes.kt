@@ -69,3 +69,17 @@ val layoutInspectorDemoNotes = listOf(
     AnnotatedString("Live Hierarchy: Inspect composable node trees and layout bounds without code modifications."),
     AnnotatedString("Recomposition Counters: Identify high recomposition counts and verify skip counts per node.")
 )
+
+val conclusionNotes = listOf(
+    AnnotatedString("Recapping our 3 core performance pillars: Lazy Layouts, Stable Keys, and Layout Inspector."),
+    AnnotatedString("Lazy Layouts: Decouple dataset size from memory allocation via viewport windowing."),
+    AnnotatedString("Stable Keys: Preserve item identity to prevent cascade recompositions."),
+    AnnotatedString("Layout Inspector: Tooling to trace and verify UI node recomposition counts."),
+    AnnotatedString("Extra Boost: Teasing Pagination (Paging 3 + Room Streams) for handling infinite datasets seamlessly.")
+)
+
+val questionsNotes = listOf(
+    AnnotatedString("Open Q&A session."),
+    AnnotatedString("Invite questions about Lazy Lists, Stable Keys, Recomposition, Layout Inspector, or Ski framework."),
+    AnnotatedString("Thank the audience for attending!")
+)

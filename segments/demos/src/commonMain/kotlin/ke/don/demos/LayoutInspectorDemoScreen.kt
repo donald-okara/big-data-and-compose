@@ -1,12 +1,24 @@
 package ke.don.demos
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +32,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material3.Card
@@ -37,7 +50,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -46,8 +62,8 @@ import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * Slide presenting Layout Inspector features for UI hierarchy inspection
- * and recomposition tracking.
+ * Expressive & animated slide presenting Layout Inspector features
+ * for UI hierarchy inspection and recomposition tracking.
  */
 @Composable
 fun LayoutInspectorDemoScreen(
@@ -59,6 +75,25 @@ fun LayoutInspectorDemoScreen(
         startAnim = true
     }
 
+    // Infinite pulsing transition for live badge
+    val infiniteTransition = rememberInfiniteTransition()
+    val pulseScale by infiniteTransition.animateFloat(
+        initialValue = 0.85f,
+        targetValue = 1.15f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    val pulseAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.4f,
+        targetValue = 0.9f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -68,12 +103,14 @@ fun LayoutInspectorDemoScreen(
         // Top Header
         AnimatedVisibility(
             visible = startAnim,
-            enter = fadeIn(animationSpec = tween(500)) + slideInVertically(animationSpec = tween(500)) { -20 }
+            enter = fadeIn(animationSpec = tween(500)) + slideInVertically(
+                animationSpec = spring(stiffness = Spring.StiffnessMediumLow)
+            ) { -30 }
         ) {
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp)),
+                    .clip(RoundedCornerShape(14.dp)),
                 color = MaterialTheme.colorScheme.surfaceVariant
             ) {
                 Row(
@@ -84,11 +121,22 @@ fun LayoutInspectorDemoScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(
-                            text = "Layout Inspector & Recomposition Tracking",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Layout Inspector & Recomposition Tracking",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Icon(
+                                imageVector = Icons.Default.AutoAwesome,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
                         Text(
                             text = "Analyze live composable hierarchies, bounds, and recomposition counts",
                             style = MaterialTheme.typography.bodySmall,
@@ -96,24 +144,36 @@ fun LayoutInspectorDemoScreen(
                         )
                     }
 
+                    // Live Pulsing Trace Badge
                     Surface(
                         color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(20.dp)
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(8.dp)
-                                    .background(MaterialTheme.colorScheme.primary, CircleShape)
-                            )
+                            Box(contentAlignment = Alignment.Center) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(12.dp)
+                                        .scale(pulseScale)
+                                        .background(
+                                            MaterialTheme.colorScheme.primary.copy(alpha = pulseAlpha),
+                                            CircleShape
+                                        )
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .size(8.dp)
+                                        .background(MaterialTheme.colorScheme.primary, CircleShape)
+                                )
+                            }
                             Text(
                                 text = "LIVE TRACE",
                                 style = MaterialTheme.typography.labelSmall,
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = FontWeight.ExtraBold,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         }
@@ -130,34 +190,55 @@ fun LayoutInspectorDemoScreen(
             horizontalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             // Left Column: Concise key features
-            AnimatedVisibility(
-                visible = startAnim,
+            Column(
                 modifier = Modifier
                     .weight(0.9f)
                     .fillMaxHeight(),
-                enter = fadeIn(animationSpec = tween(600, delayMillis = 100)) + slideInHorizontally(animationSpec = tween(600, delayMillis = 100)) { -30 }
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                // Feature 1 Card: UI Hierarchy & Bounds
+                AnimatedVisibility(
+                    visible = startAnim,
+                    enter = fadeIn(animationSpec = tween(600, delayMillis = 100)) + slideInHorizontally(
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
+                    ) { -50 } + scaleIn(animationSpec = tween(500, delayMillis = 100), initialScale = 0.95f)
                 ) {
-                    // Feature 1 Card: UI Hierarchy & Bounds
-                    InspectorFeatureCard(
+                    AnimatedInspectorFeatureCard(
                         icon = Icons.Default.Layers,
                         title = "UI Hierarchy & Bounds",
                         description = "Inspect full composable tree structure, layout bounds, and constraint passes live without modifying code.",
                         accentColor = MaterialTheme.colorScheme.primary
                     )
+                }
 
-                    // Feature 2 Card: Recomposition Counters
-                    InspectorFeatureCard(
+                // Feature 2 Card: Recomposition Counters
+                AnimatedVisibility(
+                    visible = startAnim,
+                    enter = fadeIn(animationSpec = tween(600, delayMillis = 250)) + slideInHorizontally(
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
+                    ) { -50 } + scaleIn(animationSpec = tween(500, delayMillis = 250), initialScale = 0.95f)
+                ) {
+                    AnimatedInspectorFeatureCard(
                         icon = Icons.Default.Analytics,
                         title = "Recomposition Counters",
                         description = "Track exact recomposition and skip counts per composable node in real time to isolate performance bottlenecks.",
                         accentColor = MaterialTheme.colorScheme.tertiary
                     )
+                }
 
-                    // Quick Tip Banner
+                // Quick Tip Banner
+                AnimatedVisibility(
+                    visible = startAnim,
+                    enter = fadeIn(animationSpec = tween(600, delayMillis = 400)) + slideInVertically(
+                        animationSpec = spring(stiffness = Spring.StiffnessMediumLow)
+                    ) { 30 }
+                ) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
@@ -190,9 +271,14 @@ fun LayoutInspectorDemoScreen(
                 modifier = Modifier
                     .weight(1.1f)
                     .fillMaxHeight(),
-                enter = fadeIn(animationSpec = tween(700, delayMillis = 200)) + slideInHorizontally(animationSpec = tween(700, delayMillis = 200)) { 30 }
+                enter = fadeIn(animationSpec = tween(700, delayMillis = 300)) + slideInHorizontally(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioLowBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                ) { 50 } + scaleIn(animationSpec = tween(600, delayMillis = 300), initialScale = 0.95f)
             ) {
-                LayoutInspectorVideoCard(
+                AnimatedLayoutInspectorVideoCard(
                     videoUri = Resources.Videos.getLayoutInspectorDemoUri()
                 )
             }
@@ -201,20 +287,37 @@ fun LayoutInspectorDemoScreen(
 }
 
 @Composable
-private fun InspectorFeatureCard(
+private fun AnimatedInspectorFeatureCard(
     icon: ImageVector,
     title: String,
     description: String,
     accentColor: Color
 ) {
+    var isHovered by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(
+        targetValue = if (isHovered) 1.02f else 1f,
+        animationSpec = spring(stiffness = Spring.StiffnessMedium)
+    )
+
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
+                isHovered = !isHovered
+            },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
         border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
+            width = if (isHovered) 2.dp else 1.dp,
+            color = if (isHovered) accentColor else MaterialTheme.colorScheme.outlineVariant
         )
     ) {
         Row(
@@ -259,30 +362,30 @@ private fun InspectorFeatureCard(
 }
 
 @Composable
-private fun LayoutInspectorVideoCard(
+private fun AnimatedLayoutInspectorVideoCard(
     videoUri: String,
     modifier: Modifier = Modifier
 ) {
-    var isPlaying by remember { mutableStateOf(true) }
-    var progress by remember { mutableStateOf(0.35f) }
-
-    LaunchedEffect(isPlaying) {
-        while (isPlaying) {
-            delay(100.milliseconds)
-            progress = (progress + 0.005f).let { if (it > 1f) 0f else it }
-        }
-    }
+    val gradientBorder = Brush.linearGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f),
+            MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f)
+        )
+    )
 
     Card(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .border(
+                width = 1.5.dp,
+                brush = gradientBorder,
+                shape = RoundedCornerShape(16.dp)
+            ),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
-        )
+        shape = RoundedCornerShape(16.dp)
     ) {
         VideoPlayer(
             videoUri = videoUri,
@@ -290,5 +393,3 @@ private fun LayoutInspectorVideoCard(
         )
     }
 }
-
-
