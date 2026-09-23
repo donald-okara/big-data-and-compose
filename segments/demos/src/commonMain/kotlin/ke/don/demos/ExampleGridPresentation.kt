@@ -1,6 +1,5 @@
 package ke.don.demos
 
-import androidx.compose.foundation.layout.Row
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -10,7 +9,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalGridApi
+import androidx.compose.foundation.layout.Grid
+import androidx.compose.foundation.layout.GridScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,17 +28,21 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.layout.IntrinsicMeasurable
+import androidx.compose.ui.layout.IntrinsicMeasureScope
+import androidx.compose.ui.layout.LayoutModifier
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureResult
+import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import io.github.donald_okara.components.devices.DeviceCatalog
 import io.github.donald_okara.components.devices.DeviceFrame
-import io.github.donald_okara.components.devices.DeviceOrientation
 import io.github.donald_okara.components.guides.code_viewer.FocusKotlinViewer
 import io.github.donald_okara.components.guides.code_viewer.KotlinCodeViewerCard
 import io.github.donald_okara.components.metrics.CompositionMetricsDashboard
@@ -144,6 +151,7 @@ fun CompositionMetricsLayout(
     }
 }
 
+@OptIn(ExperimentalGridApi::class)
 @Composable
 fun ProjectItemsContent(
     explanationTitle: String,
@@ -159,6 +167,7 @@ fun ProjectItemsContent(
         // 1. Top Left: Explanation Text
         AnimatedVisibility(
             visible = startAnim,
+            modifier = Modifier.gridItem(row = 1, column = 1),
             enter = fadeIn(animationSpec = tween(600, delayMillis = 100)) + slideInHorizontally(animationSpec = tween(600, delayMillis = 100)) { -30 }
         ) {
             Column(
@@ -182,6 +191,7 @@ fun ProjectItemsContent(
         // 2. Bottom Left: Code snippet card
         AnimatedVisibility(
             visible = startAnim,
+            modifier = Modifier.gridItem(row = 2, column = 1),
             enter = fadeIn(animationSpec = tween(600, delayMillis = 200)) + slideInVertically(animationSpec = tween(600, delayMillis = 200)) { 30 }
         ) {
             Box(
@@ -215,6 +225,9 @@ fun ProjectItemsContent(
         // 3. Whole Right: The device frame
         AnimatedVisibility(
             visible = startAnim,
+            modifier = Modifier
+                .gridItem(row = 1, column = 2, rowSpan = 2)
+                .noIntrinsics(),
             enter = fadeIn(animationSpec = tween(700, delayMillis = 300)) + slideInHorizontally(animationSpec = tween(700, delayMillis = 300)) { 40 }
         ) {
             Box(
@@ -226,6 +239,40 @@ fun ProjectItemsContent(
         }
     }
 }
+
+private fun Modifier.noIntrinsics(): Modifier = this.then(
+    object : LayoutModifier {
+        override fun MeasureScope.measure(
+            measurable: Measurable,
+            constraints: Constraints
+        ): MeasureResult {
+            val placeable = measurable.measure(constraints)
+            return layout(placeable.width, placeable.height) {
+                placeable.placeRelative(0, 0)
+            }
+        }
+
+        override fun IntrinsicMeasureScope.minIntrinsicWidth(
+            measurable: IntrinsicMeasurable,
+            height: Int
+        ): Int = 0
+
+        override fun IntrinsicMeasureScope.maxIntrinsicWidth(
+            measurable: IntrinsicMeasurable,
+            height: Int
+        ): Int = 0
+
+        override fun IntrinsicMeasureScope.minIntrinsicHeight(
+            measurable: IntrinsicMeasurable,
+            width: Int
+        ): Int = 0
+
+        override fun IntrinsicMeasureScope.maxIntrinsicHeight(
+            measurable: IntrinsicMeasurable,
+            width: Int
+        ): Int = 0
+    }
+)
 
 @Composable
 private fun DescriptionBullet(text: String) {
@@ -247,58 +294,54 @@ private fun DescriptionBullet(text: String) {
     }
 }
 
+@OptIn(ExperimentalGridApi::class)
 @Composable
 fun ComposeGrid(
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable GridScope.() -> Unit
 ) {
-    Layout(
+    Grid(
+        config = {
+            column(1.fr)
+            column(1.fr)
+            row(1.fr)
+            row(1.fr)
+            gap(24.dp)
+        },
         modifier = modifier,
         content = content
-    ) { measurables, constraints ->
-        val spacing = 24.dp.roundToPx()
-        val totalWidth = constraints.maxWidth
-        val totalHeight = constraints.maxHeight
-
-        val colWidth = ((totalWidth - spacing).coerceAtLeast(0)) / 2
-        val halfHeight = ((totalHeight - spacing).coerceAtLeast(0)) / 2
-
-        val leftTopConstraints = Constraints.fixed(colWidth, halfHeight)
-        val leftBottomConstraints = Constraints.fixed(colWidth, (totalHeight - halfHeight - spacing).coerceAtLeast(0))
-        val rightConstraints = Constraints.fixed(colWidth, totalHeight)
-
-        val placeables = measurables.mapIndexed { index, measurable ->
-            when (index) {
-                0 -> measurable.measure(leftTopConstraints)
-                1 -> measurable.measure(leftBottomConstraints)
-                else -> measurable.measure(rightConstraints)
-            }
-        }
-
-        layout(totalWidth, totalHeight) {
-            placeables.getOrNull(0)?.placeRelative(0, 0)
-            placeables.getOrNull(1)?.placeRelative(0, halfHeight + spacing)
-            placeables.getOrNull(2)?.placeRelative(colWidth + spacing, 0)
-        }
-    }
+    )
 }
 
 @Composable
-private fun DeviceListContent(
+fun DeviceListContent(
     items: List<ProjectItem>,
-    state: LazyListState
+    state: LazyListState,
+    useKey: Boolean = false,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         state = state,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(vertical = 4.dp)
     ) {
-        items(items) { item ->
-            TrackedProjectItemCard(item = item)
+        if (useKey) {
+            items(items, key = { it.id }) { item ->
+                TrackedProjectItemCard(
+                    item = item,
+                )
+            }
+        } else {
+            items(items) { item ->
+                TrackedProjectItemCard(
+                    item = item,
+                    modifier = Modifier.animateItem()
+                )
+            }
         }
     }
 }

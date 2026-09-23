@@ -51,3 +51,9 @@ val stableKeysIntroNotes = listOf(
     AnnotatedString("Core problem: Without explicit keys, changing or shifting a single item position forces the runtime to recompose everything below it because it relies purely on positional indices."),
     AnnotatedString("The solution: Pinning functional structural identity using key parameters so that modifications remain strictly target-isolated.")
 )
+
+val keyComparisonNotes = listOf(
+    AnnotatedString("Side-by-side technical comparison of LazyColumn with and without stable keys."),
+    AnnotatedString("Updating task status without keys triggers positional re-evaluations and unnecessary recomposition across visible items."),
+    AnnotatedString("Providing stable keys (key = { it.id }) preserves item identity across status updates, isolating recomposition to only the updated item.")
+)

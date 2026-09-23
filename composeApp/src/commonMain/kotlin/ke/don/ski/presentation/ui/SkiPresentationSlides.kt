@@ -5,6 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import ke.don.demos.ExampleColumnPresentation
 import ke.don.demos.ExampleGridPresentation
+import ke.don.demos.ExampleKeyComparisonPresentation
 import ke.don.domain.ScreenTransition
 import ke.don.domain.SlideConfig
 import ke.don.domain.SlidesConstants.SESSION_DURATION
@@ -79,6 +80,12 @@ fun skiPresentationSlides(sessionDuration: Duration = SESSION_DURATION): List<Sl
                     footer = null
                 ) {
                     StableKeysIntroScreen()
+                }
+                slide(
+                    "Stable Keys Comparison",
+                    notes = keyComparisonNotes
+                ) {
+                    ExampleKeyComparisonPresentation()
                 }
             }
         }
