@@ -22,7 +22,7 @@ import ke.don.domain.sampleProjectItems
 
 /**
  * Showcases eager evaluation constraints via a traditional Column paired with verticalScroll.
- * This explicitly exposes the "total materialization" penalty where all 50 items are composed simultaneously.
+ * The dashboard shows that all 50 items are composed by this Column example.
  */
 @Composable
 fun ExampleColumnPresentation(
@@ -49,8 +49,8 @@ fun ExampleColumnPresentation(
         explanationTitle = "Eager Layout Pass",
         explanationDescription = listOf(
             "Column + verticalScroll",
-            "All items instantiated upfront",
-            "Complete materialization pass",
+            "All 50 items are composed up front",
+            "Counter shows tracked item compositions, not memory or frame time",
         ),
         codeSnippet = sampleCode,
         modifier = modifier

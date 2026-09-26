@@ -69,13 +69,13 @@ fun ListComparisonScreen(
         ) {
             Column {
                 Text(
-                    text = "What is what",
+                    text = "Choose by list size and behavior",
                     style = MaterialTheme.typography.displayMediumEmphasized,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "Picking the right layout component based on data context",
+                    text = "A practical rule for Compose lists",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -157,7 +157,7 @@ private fun ColumnComparisonSegment() {
                     )
                 }
                 Text(
-                    text = "Standard Column",
+                    text = "Column + verticalScroll",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.secondary
@@ -180,14 +180,14 @@ private fun ColumnComparisonSegment() {
             }
 
             Text(
-                text = "Ideal for short static layouts with bounded content elements:",
+                text = "Use for a small, bounded set of items:",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            CompareBullet(text = "Eager Materialization: Measures & draws everything at launch.")
-            CompareBullet(text = "Zero Layout Window overhead for lightweight components.")
-            CompareBullet(text = "Breaks under massive datasets (heavy UI jank).")
+            CompareBullet(text = "Composes its children eagerly.")
+            CompareBullet(text = "Simple choice when the item count is small and known.")
+            CompareBullet(text = "Work grows with the number of children.")
 
             if (showCode) {
                 Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.BottomStart) {
@@ -251,7 +251,7 @@ private fun LazyListComparisonSegment() {
                     )
                 }
                 Text(
-                    text = "Lazy Lists",
+                    text = "LazyColumn",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
@@ -274,14 +274,14 @@ private fun LazyListComparisonSegment() {
             }
 
             Text(
-                text = "Engineered specifically for heavy or infinite enterprise streams:",
+                text = "Use when composing every item up front is unnecessary:",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            CompareBullet(text = "Windowed Materialization: Allocates items only inside viewport.")
-            CompareBullet(text = "Maintains stable frame rendering cycles at runtime scale.")
-            CompareBullet(text = "Requires proper item keying definitions for ideal recycling.")
+            CompareBullet(text = "Composes and lays out items as needed around the visible area.")
+            CompareBullet(text = "Useful when lists are long or their size changes.")
+            CompareBullet(text = "Add stable keys when items can be inserted, removed, or reordered.")
 
             if (showCode) {
                 Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.BottomStart) {

@@ -67,7 +67,7 @@ fun SegmentOneIntroScreen(
                 enter = fadeIn(animationSpec = tween(800, delayMillis = 200)) + slideInVertically(animationSpec = tween(800, delayMillis = 200)) { 40 }
             ) {
                 Text(
-                    text = "Lists vs LazyLists",
+                    text = "Column vs. LazyColumn",
                     style = MaterialTheme.typography.displayLargeEmphasized,
                     fontWeight = FontWeight.Black,
                     textAlign = TextAlign.Center,
@@ -80,7 +80,7 @@ fun SegmentOneIntroScreen(
                 enter = fadeIn(animationSpec = tween(1000, delayMillis = 500))
             ) {
                 Text(
-                    text = "What layout component should you use",
+                    text = "Choose based on how much content you need to show",
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center

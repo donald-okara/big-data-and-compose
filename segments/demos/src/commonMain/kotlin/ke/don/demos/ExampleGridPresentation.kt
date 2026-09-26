@@ -90,7 +90,7 @@ fun ExampleGridPresentation(
         explanationTitle = "Windowed Layout Pass",
         explanationDescription = listOf(
             "LazyColumn + ListState",
-            "Windowed item allocation",
+            "Counter shows currently visible items, not memory or frame time",
         ),
         codeSnippet = sampleCode,
         modifier = modifier
@@ -333,6 +333,7 @@ fun DeviceListContent(
             items(items, key = { it.id }) { item ->
                 TrackedProjectItemCard(
                     item = item,
+                    modifier = Modifier.animateItem()
                 )
             }
         } else {

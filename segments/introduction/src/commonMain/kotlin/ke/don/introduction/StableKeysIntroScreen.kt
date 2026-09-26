@@ -64,7 +64,7 @@ fun StableKeysIntroScreen(
                 enter = fadeIn(animationSpec = tween(800, delayMillis = 200)) + slideInVertically(animationSpec = tween(800, delayMillis = 200)) { 40 }
             ) {
                 Text(
-                    text = "Stable Keys & Recomposition",
+                    text = "Stable keys preserve item identity",
                     style = MaterialTheme.typography.displayLargeEmphasized,
                     fontWeight = FontWeight.Black,
                     textAlign = TextAlign.Center,
@@ -77,7 +77,7 @@ fun StableKeysIntroScreen(
                 enter = fadeIn(animationSpec = tween(1000, delayMillis = 500))
             ) {
                 Text(
-                    text = "Pinning structural identity to prevent cascade re-evaluations",
+                    text = "They help Compose match items when the list changes",
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center

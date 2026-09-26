@@ -109,7 +109,7 @@ fun ExampleKeyComparisonPresentation(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Perform structural changes (Insert at Top, Shuffle, Delete) to see Without Key recompose all visible rows vs With Key only composing affected items!",
+                        text = "Insert, shuffle, or delete items. Watch how keyed items keep their identity as positions change.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -163,7 +163,7 @@ fun ExampleKeyComparisonPresentation(
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text(
-                                text = "Without Key: items(items)",
+                                text = "No key: items(items)",
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onErrorContainer,
@@ -214,7 +214,7 @@ fun ExampleKeyComparisonPresentation(
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text(
-                                text = "With Key: items(items, key = { it.id })",
+                                text = "Stable key: key = { it.id }",
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,

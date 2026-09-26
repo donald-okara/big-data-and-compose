@@ -209,7 +209,7 @@ fun LayoutInspectorDemoScreen(
                     AnimatedInspectorFeatureCard(
                         icon = Icons.Default.Layers,
                         title = "UI Hierarchy & Bounds",
-                        description = "Inspect full composable tree structure, layout bounds, and constraint passes live without modifying code.",
+                        description = "Explore the composable hierarchy and layout bounds in the running app.",
                         accentColor = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -227,7 +227,7 @@ fun LayoutInspectorDemoScreen(
                     AnimatedInspectorFeatureCard(
                         icon = Icons.Default.Analytics,
                         title = "Recomposition Counters",
-                        description = "Track exact recomposition and skip counts per composable node in real time to isolate performance bottlenecks.",
+                        description = "Use recomposition counters to investigate which composables update as state changes.",
                         accentColor = MaterialTheme.colorScheme.tertiary
                     )
                 }

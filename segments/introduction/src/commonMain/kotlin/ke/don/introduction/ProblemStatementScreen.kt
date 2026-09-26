@@ -67,7 +67,7 @@ fun ProblemStatementScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "How do we scale our app under heavy data loads",
+                    text = "Large lists can make the UI do work users cannot see",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -137,7 +137,7 @@ private fun ProblemSegment() {
                     )
                 }
                 Text(
-                    text = "Streaming Frictions",
+                    text = "Where the work comes from",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.error
@@ -145,14 +145,14 @@ private fun ProblemSegment() {
             }
 
             Text(
-                text = "Challenges with heavy real-time data flows:",
+                text = "Three questions for a responsive list:",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            BulletItem(text = "Room Stream Backpressure")
-            BulletItem(text = "Unbuffered UI Materialization")
-            BulletItem(text = "Ripple Recompositions")
+            BulletItem(text = "Should every item be composed up front?")
+            BulletItem(text = "How does an item keep its identity after a reorder?")
+            BulletItem(text = "How can we inspect what recomposes?")
         }
     }
 }
@@ -203,15 +203,14 @@ private fun FocusSegment() {
             }
 
             Text(
-                text = "Mastering the Compose rendering layer:",
+                text = "Today’s path:",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            BulletItem(text = "Recomposition Tracking")
-            BulletItem(text = "Immutable & Stable States")
-            BulletItem(text = "Granular Lazy Keys")
-            BulletItem(text = "Pagination Pre-flight")
+            BulletItem(text = "Choose Column or LazyColumn")
+            BulletItem(text = "Use keys to preserve item identity")
+            BulletItem(text = "Inspect the UI hierarchy and recomposition   ")
         }
     }
 }

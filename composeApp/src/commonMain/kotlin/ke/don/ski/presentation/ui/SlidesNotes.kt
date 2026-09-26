@@ -3,59 +3,58 @@ package ke.don.ski.presentation.ui
 import androidx.compose.ui.text.AnnotatedString
 
 val introductionNotes = listOf(
-    AnnotatedString("Big Data meets Jetpack Compose"),
-    AnnotatedString("Analogy: product management tool that breaks for big clients"),
-    AnnotatedString("Recomposition = Incremental stream processing"),
-    AnnotatedString("Scalability & Lazy loading for heavy datasets")
+    AnnotatedString("Set the scope: this talk is about the UI behavior of large lists in Compose."),
+    AnnotatedString("Three questions guide the session: when to use LazyColumn, how keys preserve item identity, and how to inspect recomposition."),
+    AnnotatedString("Takeaway to return to: compose only what the screen needs, preserve identity when data moves, and measure the behavior you care about.")
 )
 
 val problemStatementNotes = listOf(
-    AnnotatedString("Room Stream Backpressure: Collecting `Flow<List<T>>` directly from Room triggers database queries and full-list emissions on every single modification, flooding the main thread with heavy object mapping overhead."),
-    AnnotatedString("Unbounded UI Materialization: When massive quantities of items hit the UI layer, attempting to instantiate, measure, or hold layouts for all of them concurrently blocks the main frame rendering loops, inducing critical frame drops and memory allocation spikes."),
-    AnnotatedString("Ripple Recompositions: Lacking fine-grained keying or stability guarantees causes a simple state change in one cell to cascade and re-evaluate every independent row in the visible list, blowing up our composition metrics dashboard.")
+    AnnotatedString("A regular Column composes all its children, which can mean unnecessary work for a long list."),
+    AnnotatedString("A LazyColumn composes and lays out items as needed around the visible area. The demo counter illustrates composition behavior; it does not measure memory or frame time."),
+    AnnotatedString("When items can move, stable keys let Compose track each item by identity instead of position. Recomposition still depends on state reads and other factors.")
 )
 
 val segmentOneIntroNotes = listOf(
-    AnnotatedString("Setting up our very first practical segment: Columns vs LazyColumns."),
-    AnnotatedString("Audience engagement opportunity: Questions,what is the difference between lazy lists and normal lists, what is lazy in Kotlin, "),
-    AnnotatedString("The goal: Understand exactly when standard view containers hit physical thresholds and where lazy variants step in."),
+    AnnotatedString("First: choose between Column + verticalScroll and LazyColumn."),
+    AnnotatedString("Ask: how many items are there, and do we need to compose them all at once?"),
+    AnnotatedString("Rule of thumb: use Column for a small, bounded set; use LazyColumn when composing every item up front is unnecessary."),
 )
 
 val listComparisonNotes = listOf(
-    AnnotatedString("Side-by-side technical comparison layout matrix."),
-    AnnotatedString("Standard Column: Eager materialization pass. Perfect for low bound components, completely breaks for enterprise streaming loads due to massive upfront costs."),
-    AnnotatedString("Lazy Lists: Windowed viewport constraint parameters. Decouples list data boundaries from display boundaries entirely."),
-    AnnotatedString("Code Viewer cards: Interactive snippet sheets. Clicking expands full structural representation details overlay.")
+    AnnotatedString("Compare the same kind of content in a Column and a LazyColumn."),
+    AnnotatedString("Column composes all children. This is straightforward for a small, bounded set."),
+    AnnotatedString("LazyColumn composes and lays out items as needed around the visible area; it does not mean only the exact visible rows exist."),
+    AnnotatedString("Use the code cards if useful, but keep the decision rule central: small and bounded → Column; long or changing → consider LazyColumn.")
 )
 
 val realTimeIntroNotes = listOf(
     AnnotatedString("Setting the stage for the live metric simulation."),
-    AnnotatedString("The goal: Observe exactly how composition counters react when data size scales while visibility remains constant."),
+    AnnotatedString("The next two demos use the same 50 sample items. The Column counter tracks item compositions; the LazyColumn display tracks visible items. These are different measures, not a direct performance or memory comparison."),
     AnnotatedString("Transitioning to the interactive device frame.")
 )
 
 val columnDemoNotes = listOf(
-    AnnotatedString("Live presentation of Eager Materialization loops."),
-    AnnotatedString("Look at the top dashboard count: It reads 50 immediately from the start without any scroll interactions!"),
-    AnnotatedString("Why? Because standard Columns allocate layout nodes, measure bounds, and allocate memory definitions for the entire list collection upfront on initialization.")
+    AnnotatedString("This demo has 50 sample items in a Column with verticalScroll."),
+    AnnotatedString("The dashboard counts tracked item compositions. It starts at 50 because the Column composes all 50 children."),
+    AnnotatedString("This counter demonstrates composition behavior only. It does not directly report memory use, layout passes, or frame performance.")
 )
 
 val lazyColumnDemoNotes = listOf(
-    AnnotatedString("Live presentation of Windowed Viewport allocation constraints."),
-    AnnotatedString("Look at the top counter: It reads around 5 to 6 items on initial presentation loading pass!"),
-    AnnotatedString("Observe the behavior on scroll: The composed item count dynamically updates on the fly as items traverse layout boundary windows, highlighting zero pre-allocation waste.")
+    AnnotatedString("This demo uses the same 50 sample items in a LazyColumn."),
+    AnnotatedString("The dashboard reports the number of currently visible items, not the total number composed internally by LazyColumn."),
+    AnnotatedString("Scroll and watch the visible count change. This illustrates the viewport; it is not a memory or frame-time measurement.")
 )
 
 val stableKeysIntroNotes = listOf(
     AnnotatedString("Transitioning to Part 2: Stable Keys & Recomposition."),
-    AnnotatedString("Core problem: Without explicit keys, changing or shifting a single item position forces the runtime to recompose everything below it because it relies purely on positional indices."),
-    AnnotatedString("The solution: Pinning functional structural identity using key parameters so that modifications remain strictly target-isolated.")
+    AnnotatedString("Without keys, lazy list items are identified by position. Inserting or reordering can make remembered state follow a position instead of the same data item."),
+    AnnotatedString("Stable keys identify items by a unique value, such as an ID, so Compose can match them across list changes. Keys do not guarantee that only one item recomposes.")
 )
 
 val keyComparisonNotes = listOf(
-    AnnotatedString("Side-by-side technical comparison of LazyColumn with and without stable keys."),
-    AnnotatedString("Updating task status without keys triggers positional re-evaluations and unnecessary recomposition across visible items."),
-    AnnotatedString("Providing stable keys (key = { it.id }) preserves item identity across status updates, isolating recomposition to only the updated item.")
+    AnnotatedString("Use Insert, Shuffle, and Delete to change list structure in both examples."),
+    AnnotatedString("Compare the tracked rows and, if state is remembered per row, whether it stays with the same item."),
+    AnnotatedString("The key demonstrates identity tracking. Avoid claiming that keys alone restrict recomposition to one row; inspect the actual counters and describe what this demo shows.")
 )
 
 val layoutInspectorIntroNotes = listOf(
@@ -65,21 +64,20 @@ val layoutInspectorIntroNotes = listOf(
 )
 
 val layoutInspectorDemoNotes = listOf(
-    AnnotatedString("Demonstrating Android Studio Layout Inspector live recomposition tracing."),
-    AnnotatedString("Live Hierarchy: Inspect composable node trees and layout bounds without code modifications."),
-    AnnotatedString("Recomposition Counters: Identify high recomposition counts and verify skip counts per node.")
+    AnnotatedString("Use Layout Inspector to explore the running UI hierarchy and layout bounds."),
+    AnnotatedString("Point out the selected composable and its place in the hierarchy."),
+    AnnotatedString("If counters are available for this setup, use them to investigate recomposition. Counters alone do not establish a performance problem; follow up with appropriate profiling." )
 )
 
 val conclusionNotes = listOf(
-    AnnotatedString("Recapping our 3 core performance pillars: Lazy Layouts, Stable Keys, and Layout Inspector."),
-    AnnotatedString("Lazy Layouts: Decouple dataset size from memory allocation via viewport windowing."),
-    AnnotatedString("Stable Keys: Preserve item identity to prevent cascade recompositions."),
-    AnnotatedString("Layout Inspector: Tooling to trace and verify UI node recomposition counts."),
-    AnnotatedString("Extra Boost: Teasing Pagination (Paging 3 + Room Streams) for handling infinite datasets seamlessly.")
+    AnnotatedString("Close with the decision rule: Column for a small, bounded set; LazyColumn when composing every item up front is unnecessary."),
+    AnnotatedString("When items can move, give them stable keys so Compose can preserve their identity."),
+    AnnotatedString("Use Layout Inspector to investigate the hierarchy and recomposition; use performance tools and representative devices to measure actual costs."),
+    AnnotatedString("Invite the audience to apply the rule to a list they are building.")
 )
 
 val questionsNotes = listOf(
     AnnotatedString("Open Q&A session."),
-    AnnotatedString("Invite questions about Lazy Lists, Stable Keys, Recomposition, Layout Inspector, or Ski framework."),
+    AnnotatedString("Invite questions about Column vs. LazyColumn, stable keys, recomposition, or Layout Inspector."),
     AnnotatedString("Thank the audience for attending!")
 )

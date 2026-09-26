@@ -1,9 +1,5 @@
-# Working with big data in Compose the right way
+# Building responsive large lists in Compose
 
-Say you have a big list. Think bigger. Nope. Bigger.
+Large lists can make a Compose screen do more work than the user can see. This session focuses on three practical questions: when should you use a lazy layout, how do stable keys preserve item identity when a list changes, and how can you inspect recomposition in a running UI?
 
-You want to display 500+ entities on one screen because, apparently, your users enjoy scrolling. How do you keep your UI from begging for water like someone who just ran a marathon? And, more importantly, how do we make sure that a change to one item doesn't bring the entire screen to its knees?
-
-In this session, we'll explore how to build Compose UIs that can handle large amounts of data without doing unnecessary work. We'll look at lazy layouts, recomposition, stable keys, and recomposition scoping, then use profiling tools to hunt down where our UI is spending its time.
-
-By the end, you'll have a better mental model for how Compose handles large lists, how to diagnose inefficient rendering, and how to keep your users' phones from becoming hot bricks.
+Through side-by-side examples and live demonstrations, we’ll compare `Column` with `LazyColumn`, observe how visible items are composed while scrolling, and use Layout Inspector to explore the UI hierarchy and recomposition counters. You’ll leave with a simple layout-selection rule and a clearer way to investigate list behavior. The examples illustrate composition behavior; they are not a substitute for measuring frame time or memory on a representative device.

@@ -62,7 +62,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * 1. Lazy layouts
  * 2. Stable keys
  * 3. Layout inspector
- * 4. Teasing Pagination as an extra boost
+ * 4. A practical layout selection rule
  */
 @Composable
 fun ConclusionScreen(
@@ -74,7 +74,7 @@ fun ConclusionScreen(
         startAnim = true
     }
 
-    // Infinite pulsing transition for the Pagination teaser card
+    // Subtle emphasis for the closing rule card
     val infiniteTransition = rememberInfiniteTransition()
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 0.98f,
@@ -166,8 +166,8 @@ fun ConclusionScreen(
                         number = "01",
                         icon = Icons.AutoMirrored.Filled.ViewList,
                         title = "Lazy Layouts",
-                        description = "Use windowed viewport allocation instead of eager materialization to scale with heavy datasets.",
-                        badgeText = "Viewport Bound",
+                        description = "Composes and lays out items as needed around the visible area.",
+                        badgeText = "Long or changing lists",
                         accentColor = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -187,7 +187,7 @@ fun ConclusionScreen(
                         number = "02",
                         icon = Icons.Default.Key,
                         title = "Stable Keys",
-                        description = "Pin structural identity using key = { it.id } to isolate updates and prevent cascade recompositions.",
+                        description = "Give moving items a stable ID so Compose can match them across list changes.",
                         badgeText = "Identity Preserved",
                         accentColor = MaterialTheme.colorScheme.secondary
                     )
@@ -215,8 +215,8 @@ fun ConclusionScreen(
                         number = "03",
                         icon = Icons.Default.Analytics,
                         title = "Layout Inspector",
-                        description = "Profile live composable hierarchies, layout bounds, and recomposition/skip counters in real time.",
-                        badgeText = "Live Profiling",
+                        description = "Explore the UI hierarchy and investigate recomposition behavior.",
+                        badgeText = "Inspect, then measure",
                         accentColor = MaterialTheme.colorScheme.tertiary
                     )
                 }
@@ -424,7 +424,7 @@ private fun TeaserPaginationCard(
                             modifier = Modifier.size(12.dp)
                         )
                         Text(
-                            text = "NEXT SESSION (Probably)",
+                            text = "REMEMBER THIS",
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Black,
                             color = MaterialTheme.colorScheme.onPrimary
@@ -435,13 +435,13 @@ private fun TeaserPaginationCard(
 
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
-                    text = "4. Extra Boost: Pagination",
+                    text = "The layout rule",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "Stream millions of rows smoothly on demand using Paging 3 + Room Flow for ultimate memory control.",
+                    text = "Use Column for a small, bounded set. Consider LazyColumn when composing every item up front is unnecessary.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -452,7 +452,7 @@ private fun TeaserPaginationCard(
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = "Paging 3 + Room Flow",
+                    text = "Choose for the work the screen needs",
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
