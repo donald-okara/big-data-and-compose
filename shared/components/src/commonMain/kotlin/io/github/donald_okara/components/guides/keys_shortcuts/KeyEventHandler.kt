@@ -28,6 +28,11 @@ sealed class KeyEventHandler(
         keys = setOf(Key.DirectionUp)
     )
 
+    data object ToggleWhiteboard : KeyEventHandler(
+        hint = "Show/Hide Whiteboard",
+        keys = setOf(Key.W)
+    )
+
     data object ShowTableOfContent : KeyEventHandler(
         hint = "Show/Hide Table of Content",
         keys = setOf(Key.T)
@@ -57,6 +62,16 @@ sealed class KeyEventHandler(
         hint = "Show/Hide Flashcard",
         keys = setOf(Key.F)
     )
+
+    data object SnoozeTimer : KeyEventHandler(
+        hint = "Timer +1 min",
+        keys = setOf(Key.RightBracket)
+    )
+
+    data object DeductTimer : KeyEventHandler(
+        hint = "Timer -1 min",
+        keys = setOf(Key.LeftBracket)
+    )
 }
 
 val DeckShortcuts = listOf(
@@ -64,12 +79,15 @@ val DeckShortcuts = listOf(
     KeyEventHandler.Previous,
     KeyEventHandler.SwitchTheme,
     KeyEventHandler.ShowToolBar,
+    KeyEventHandler.ToggleWhiteboard,
     KeyEventHandler.ShowTableOfContent,
     KeyEventHandler.ShowShortcutGuide,
     KeyEventHandler.DismissAll,
     KeyEventHandler.ShowNotes,
     KeyEventHandler.ShowHint,
-    KeyEventHandler.ToggleFlashcard
+    KeyEventHandler.ToggleFlashcard,
+    KeyEventHandler.SnoozeTimer,
+    KeyEventHandler.DeductTimer
 )
 
 
@@ -93,5 +111,8 @@ fun Key.displayName(): String = when (this) {
     Key.H -> "H"
     Key.N -> "N"
     Key.F -> "F"
+    Key.W -> "W"
+    Key.LeftBracket -> "["
+    Key.RightBracket -> "]"
     else -> toString()
 }

@@ -7,12 +7,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import io.github.donald_okara.components.backgrounds.Background
 import ke.don.design.theme.AppTheme
+import ke.don.design.theme.TextScale
 import ke.don.design.theme.dimens
 import ke.don.domain.DeckMode
 import ke.don.domain.DeckNavigator
@@ -54,10 +57,13 @@ fun PresentationDeck(
     val deckMode = LocalDeckMode.current
 
     var isDarkTheme by rememberSaveable(deckMode) { mutableStateOf(deckMode == DeckMode.Local) }
+    var textScale by remember { mutableFloatStateOf(TextScale.DEFAULT) }
+    val timerController = rememberTimerController(SESSION_DURATION)
 
     CompositionLocalProvider(LocalSharesFrameFlag provides shareFrame) {
         AppTheme(
             darkTheme = isDarkTheme,
+            textScale = textScale,
         ) {
             Surface {
                 background?.Render()
@@ -68,11 +74,12 @@ fun PresentationDeck(
                     darkTheme = isDarkTheme,
                     frame = guidesFrame,
                     slides = slides,
+                    timer = timerController,
+                    textScale = textScale,
+                    onTextScaleChange = { textScale = it },
                     navigator = navigator
                 ) {
                     if (shareFrame) {
-                        val timerController = rememberTimerController(SESSION_DURATION)
-
                         val timerState by timerController.state.collectAsState()
 
                         mainFrame.Render(header = { MainHeader(deckMode) }, footer = {

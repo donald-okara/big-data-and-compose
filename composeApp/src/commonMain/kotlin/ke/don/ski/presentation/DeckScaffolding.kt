@@ -33,12 +33,16 @@ import io.github.donald_okara.components.guides.keys_shortcuts.ShortcutsDictiona
 import io.github.donald_okara.components.guides.notes.Notes
 import io.github.donald_okara.components.guides.notes.NotesComponent
 import io.github.donald_okara.components.guides.notes.NotesHint
+import io.github.donald_okara.components.guides.whiteboard.FocusWhiteboard
+import ke.don.design.theme.TextScale
 import ke.don.design.theme.dimens
 import ke.don.domain.DeckMode
 import ke.don.domain.DeckNavigator
 import ke.don.domain.LocalDeckMode
 import ke.don.domain.SlideConfig
 import ke.don.domain.frames.SkiFrame
+import ke.don.domain.timer.TimerController
+import ke.don.domain.timer.TimerIntentHandler
 import ke.don.ski.navigation.DeckShortcutHandler
 import ke.don.ski.presentation.ui.FlashcardOverlay
 import ke.don.ski.presentation.ui.ToolBar
@@ -51,6 +55,9 @@ fun DeckScaffolding(
     darkTheme: Boolean,
     frame: SkiFrame, // only needed for Local mode
     slides: List<SlideConfig>,
+    timer: TimerController,
+    textScale: Float,
+    onTextScaleChange: (Float) -> Unit,
     switchTheme: () -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -63,14 +70,19 @@ fun DeckScaffolding(
     var showHint by remember { mutableStateOf(true) }
     var showFlashcard by remember { mutableStateOf(false) }
 
+    var showWhiteboard by remember { mutableStateOf(false) }
+    var whiteboardValue by remember { mutableStateOf("") }
+    var isWhiteboardDark by remember { mutableStateOf(false) }
+
     val focusRequester = remember { FocusRequester() }
     var hasFocus by remember { mutableStateOf(false) }
 
-    val shortcutDispatcher = remember(navigator, mode) {
+    val shortcutDispatcher = remember(navigator, mode, timer, textScale) {
         DeckShortcutHandler(
             navigator = navigator,
             switchTheme = switchTheme,
             toggleToolbar = { showToolBar = !showToolBar },
+            toggleWhiteboard = { showWhiteboard = !showWhiteboard },
             toggleToc = {
                 if (mode == DeckMode.Local) {
                     showTableOfContent = !showTableOfContent
@@ -89,6 +101,7 @@ fun DeckScaffolding(
             },
             dismissAll = {
                 showToolBar = false
+                showWhiteboard = false
                 showFlashcard = false
                 if (mode == DeckMode.Local) {
                     showHint = false
@@ -111,9 +124,18 @@ fun DeckScaffolding(
                 }
 
             },
+            snoozeTimer = {
+                if (mode == DeckMode.Local) timer.handleIntent(TimerIntentHandler.Snooze)
+            },
+            deductTimer = {
+                if (mode == DeckMode.Local) timer.handleIntent(TimerIntentHandler.Deduct)
+            },
             toggleFlashcard = {
                 if (mode == DeckMode.Local) showFlashcard = !showFlashcard
-            }
+            },
+            zoomIn = { onTextScaleChange(TextScale.adjust(textScale, 1)) },
+            zoomOut = { onTextScaleChange(TextScale.adjust(textScale, -1)) },
+            resetZoom = { onTextScaleChange(TextScale.DEFAULT) }
         )
     }
 
@@ -137,12 +159,23 @@ fun DeckScaffolding(
             ToolBar(
                 darkTheme = darkTheme,
                 onThemeClick = switchTheme,
+                onWhiteboardClick = { showWhiteboard = true },
                 title = {
                     Text(
                         text = navigator.currentSlide.label,
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
+            )
+        }
+
+        if (showWhiteboard) {
+            FocusWhiteboard(
+                onDismiss = { showWhiteboard = false },
+                darkTheme = isWhiteboardDark,
+                toggleTheme = { isWhiteboardDark = !isWhiteboardDark },
+                value = whiteboardValue,
+                onValueChange = { whiteboardValue = it }
             )
         }
 
