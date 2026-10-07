@@ -52,6 +52,11 @@ sealed class KeyEventHandler(
         hint = "Show/Hide Notes",
         keys = setOf(Key.N)
     )
+
+    data object ToggleFlashcard : KeyEventHandler(
+        hint = "Show/Hide Flashcard",
+        keys = setOf(Key.F)
+    )
 }
 
 val DeckShortcuts = listOf(
@@ -63,7 +68,8 @@ val DeckShortcuts = listOf(
     KeyEventHandler.ShowShortcutGuide,
     KeyEventHandler.DismissAll,
     KeyEventHandler.ShowNotes,
-    KeyEventHandler.ShowHint
+    KeyEventHandler.ShowHint,
+    KeyEventHandler.ToggleFlashcard
 )
 
 
@@ -86,5 +92,6 @@ fun Key.displayName(): String = when (this) {
     Key.Escape -> "Esc"
     Key.H -> "H"
     Key.N -> "N"
+    Key.F -> "F"
     else -> toString()
 }

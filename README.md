@@ -156,32 +156,38 @@ This flag can be toggled in `gradle.properties`.
 
 ### Run on Web (Wasm)
 
+The wasmJs target lives in `:webApp`, not `:composeApp` — `:composeApp` is a library module shared by every entry point and has no runnable task of its own.
+
 ```shell
 # macOS/Linux
-./gradlew :composeApp:wasmJsBrowserDevelopmentRun
+./gradlew :webApp:wasmJsBrowserDevelopmentRun
 
 # Windows
-.\gradlew.bat :composeApp:wasmJsBrowserDevelopmentRun
+.\gradlew.bat :webApp:wasmJsBrowserDevelopmentRun
 ```
 
 ### Run on Desktop (JVM)
 
+Launching the deck is `:desktopApp:run`, which opens the presenter panel and the slides window as two synced windows.
+
 ```shell
 # macOS/Linux
-./gradlew :composeApp:run
+./gradlew :desktopApp:run
 
 # Windows
-.\gradlew.bat :composeApp:run
+.\gradlew.bat :desktopApp:run
 ```
 
 ### Run componentGallery
 
+The gallery task is registered on `:desktopApp`, not the root project.
+
 ```shell
 # macOS/Linux
-./gradlew runGallery
+./gradlew :desktopApp:runGallery
 
 # Windows
-.\gradlew.bat runGallery
+.\gradlew.bat :desktopApp:runGallery
 ```
 
 ### Deploy to Vercel
@@ -189,15 +195,17 @@ This flag can be toggled in `gradle.properties`.
 The web version (Gallery + Slides) can be deployed to Vercel.
 Check out the [live example here](https://ski-gallery.vercel.app).
 
-1.  **Build the production distribution**:
+1.  **Build the production distribution** (the wasmJs target lives in `:webApp`, not `:composeApp`):
     ```shell
-    ./gradlew :composeApp:wasmJsBrowserDistribution
+    ./gradlew :webApp:wasmJsBrowserDistribution
     ```
 2.  **Deploy using Vercel CLI**:
     ```shell
-    cd composeApp/build/dist/wasmJs/productionExecutable
+    cd webApp/build/dist/wasmJs/productionExecutable
     vercel deploy --prod
     ```
+
+The output folder already contains a `vercel.json` that rewrites all paths to `index.html`, so direct links and `/?slides` load correctly. Rebuild (step 1) before every deploy — the output folder is regenerated on each build.
 
 ---
 Please check the [context.md](context.md) to understand the framework architecture and rules for AI development.

@@ -40,6 +40,7 @@ import ke.don.domain.LocalDeckMode
 import ke.don.domain.SlideConfig
 import ke.don.domain.frames.SkiFrame
 import ke.don.ski.navigation.DeckShortcutHandler
+import ke.don.ski.presentation.ui.FlashcardOverlay
 import ke.don.ski.presentation.ui.ToolBar
 import kotlinx.coroutines.yield
 
@@ -60,6 +61,7 @@ fun DeckScaffolding(
 
     var showNotes by remember { mutableStateOf(true) }
     var showHint by remember { mutableStateOf(true) }
+    var showFlashcard by remember { mutableStateOf(false) }
 
     val focusRequester = remember { FocusRequester() }
     var hasFocus by remember { mutableStateOf(false) }
@@ -87,6 +89,7 @@ fun DeckScaffolding(
             },
             dismissAll = {
                 showToolBar = false
+                showFlashcard = false
                 if (mode == DeckMode.Local) {
                     showHint = false
                     showNotes = false
@@ -107,6 +110,9 @@ fun DeckScaffolding(
                     showHint = false
                 }
 
+            },
+            toggleFlashcard = {
+                if (mode == DeckMode.Local) showFlashcard = !showFlashcard
             }
         )
     }
@@ -157,7 +163,12 @@ fun DeckScaffolding(
                     )
                 }
 
-                Box(Modifier.weight(1f)) { content() }
+                Box(Modifier.weight(1f)) {
+                    content()
+                    if (showFlashcard) {
+                        FlashcardOverlay(notes = navigator.currentSlide.notes)
+                    }
+                }
 
                 AnimatedVisibility(showShortcuts) {
                     ShortcutsDictionary(
