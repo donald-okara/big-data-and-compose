@@ -66,9 +66,9 @@ fun DeckScaffolding(
     var showTableOfContent by remember { mutableStateOf(false) }
     var showShortcuts by remember { mutableStateOf(false) }
 
-    var showNotes by remember { mutableStateOf(true) }
+    var showNotes by remember { mutableStateOf(false) }
     var showHint by remember { mutableStateOf(true) }
-    var showFlashcard by remember { mutableStateOf(false) }
+    var showFlashcard by remember { mutableStateOf(true) }
 
     var showWhiteboard by remember { mutableStateOf(false) }
     var whiteboardValue by remember { mutableStateOf("") }
@@ -121,6 +121,7 @@ fun DeckScaffolding(
                     showShortcuts = false
                     showTableOfContent = false
                     showHint = false
+                    showFlashcard = false
                 }
 
             },
@@ -131,7 +132,10 @@ fun DeckScaffolding(
                 if (mode == DeckMode.Local) timer.handleIntent(TimerIntentHandler.Deduct)
             },
             toggleFlashcard = {
-                if (mode == DeckMode.Local) showFlashcard = !showFlashcard
+                if (mode == DeckMode.Local) {
+                    showFlashcard = !showFlashcard
+                    showNotes = false
+                }
             },
             zoomIn = { onTextScaleChange(TextScale.adjust(textScale, 1)) },
             zoomOut = { onTextScaleChange(TextScale.adjust(textScale, -1)) },

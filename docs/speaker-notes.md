@@ -43,7 +43,7 @@ Notes are for you on stage, so write them as spoken sentences rather than as bul
 
 ## Notes as flashcards
 
-Each note line is also a flashcard. Press `F` in the presenter panel to show the slide's notes as a stack of index cards in the bottom-right corner, one card per line. Swipe the top card away to reveal the next. Write each note as one self-contained sentence, since it becomes one card.
+Each note line is also a flashcard. The presenter panel shows flashcards by default; press `F` to toggle them, or `N` to switch to the plain notes panel instead. The two are mutually exclusive — opening one closes the other. Flashcards show the slide's notes as a stack of index cards in the bottom-right corner, one card per line. Swipe the top card away to reveal the next. Write each note as one self-contained sentence, since it becomes one card.
 
 ## Placeholder notes
 
